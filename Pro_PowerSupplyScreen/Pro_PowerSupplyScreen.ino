@@ -13,73 +13,88 @@ int rawRectVoltage = 0;
 int rawNegativeVoltage = 0;
 int rawPositiveVoltage = 0;
 
-const float positiveLow     = 1.01;
-const int   positiveLowADC  = 77;
-const float positiveHigh    = 19.7;
-const int   postiiveHighADC = 777;
+const float positiveLow     = 1.012;
+const int   positiveLowADC  = 58;
+const float positiveHigh    = 13.82;
+const int   postiiveHighADC = 822;
 
-const float negativeLow     = 1.01;
-const int   negativeLowADC  = 777;
-const float negativeHigh    = 19.7;
-const int   negativeHighADC = 77;
+const float negativeLow     = 13.62; //1.044;
+const int   negativeLowADC  = 960;
+const float negativeHigh    = 1.044; //13.56;
+const int   negativeHighADC = 8;
 
 
 
 void setup() {
   // put your setup code here, to run once:
-  pinMode(13, OUTPUT);  
+  pinMode(13, OUTPUT);
   digitalWrite(13, HIGH); //Output led high while in setup mode
-  
+
   lcd.begin(16, 2);
-  
-  lcd.setCursor(0,0);
+
+  lcd.setCursor(0, 0);
   lcd.write("ECE 322 Supply");
   lcd.setCursor(0, 1);
   lcd.write("Nick McComb");
- 
-  delay(500); 
+
+  delay(2000);
   
+  lcd.setCursor(0, 1);
+  lcd.write("nickmccomb.net");
+  
+  delay(2000);
+
+  lcd.clear();  //Clear the screen
+
   digitalWrite(13, LOW); //Output led low when exiting setup mode
-  
+
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
 
-  delay(50); //Random timing ness
-  
+  delay(200); //Random timing ness
+
   rawRectVoltage = analogRead(A0);
   rawPositiveVoltage = analogRead(A1);
   rawNegativeVoltage = analogRead(A2);
-  
+
   //(positiveHighADC - positiveLowADC) //ADC travel
   //(positiveHigh - positiveLow) //Voltage Travel
-  
   //(VoltsTravel / ADCs) = Volts per ADC
-  
+
   //ADCS per Volt
 
   //Volts per ADC count
-  
-  positiveVoltage = rawPositiveVoltage * ((positiveHigh - positiveLow) / (postiiveHighADC - positiveLowADC));
-  
-  lcd.setCursor(0 , 0);
-  lcd.print("rect");
-  
-  lcd.setCursor(5, 0);
-  lcd.print("v+");
 
-  lcd.setCursor(10, 0);
-  lcd.print("v-");
+
+
+  positiveVoltage = rawPositiveVoltage * ((positiveHigh - positiveLow) / (postiiveHighADC - positiveLowADC));
+  negativeVoltage = rawNegativeVoltage * ((negativeHigh - negativeLow) / (negativeHighADC - negativeLowADC));
   
+  //Final "adjustments"
+  negativeVoltage = ((13.6 - negativeVoltage) * -1) - .1;
   
-  lcd.setCursor(0 , 1);
-  lcd.print(rawRectVoltage);
+  positiveVoltage += .1;
   
-  lcd.setCursor(5 , 1);
-  lcd.print(rawPositiveVoltage);
+  //lcd.clear();  //Clear the display
+
+  lcd.setCursor(0, 0);
+  lcd.print("V-");
+
+  lcd.setCursor(0, 1);
+  lcd.print(negativeVoltage, 1);
+
+  lcd.setCursor(6, 0);
+  lcd.print("V+");
+
+  lcd.setCursor(6 , 1);
+  lcd.print(positiveVoltage, 1);
+
+  lcd.setCursor(13, 0);
+  lcd.print("ECE");
   
-  lcd.setCursor(10, 1);
-  lcd.print(rawNegativeVoltage);
+  lcd.setCursor(13, 1);
+  lcd.print("322");
   
 }
