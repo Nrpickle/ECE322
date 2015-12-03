@@ -84,12 +84,18 @@ void loop() {
 
   lcd.setCursor(0, 1);
   lcd.print(negativeVoltage, 1);
+  
+  if(negativeVoltage > -10.0)
+    lcd.print(" ");
 
   lcd.setCursor(6, 0);
   lcd.print("V+");
 
   lcd.setCursor(6 , 1);
   lcd.print(positiveVoltage, 1);
+
+  if(positiveVoltage < 10.0)
+    lcd.print(" ");
 
   lcd.setCursor(13, 0);
   lcd.print("ECE");
