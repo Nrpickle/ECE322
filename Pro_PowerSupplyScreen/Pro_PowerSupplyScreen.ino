@@ -1,3 +1,12 @@
+/*
+ECE 322 - Voltage Measurement
+
+December 2015
+Nick McComb - nickmccomb.net
+
+This outputs measured voltages to an LCD screen. To see the project page, go here: http://nickmccomb.net/ece-322-voltage-regulator
+*/
+
 // include the library code:
 #include <LiquidCrystal.h>
 
@@ -22,8 +31,6 @@ const float negativeLow     = 13.62; //1.044;
 const int   negativeLowADC  = 960;
 const float negativeHigh    = 1.044; //13.56;
 const int   negativeHighADC = 8;
-
-
 
 void setup() {
   // put your setup code here, to run once:
@@ -59,32 +66,27 @@ void loop() {
   rawPositiveVoltage = analogRead(A1);
   rawNegativeVoltage = analogRead(A2);
 
+  //Sub modules that are used to calculate the final result
   //(positiveHighADC - positiveLowADC) //ADC travel
   //(positiveHigh - positiveLow) //Voltage Travel
-  //(VoltsTravel / ADCs) = Volts per ADC
-
-  //ADCS per Volt
-
-  //Volts per ADC count
-
-
-
+  //(VoltsTravel / ADCs) = Volts per ADC count
+  
+  //Calculate the current voltage
   positiveVoltage = rawPositiveVoltage * ((positiveHigh - positiveLow) / (postiiveHighADC - positiveLowADC));
   negativeVoltage = rawNegativeVoltage * ((negativeHigh - negativeLow) / (negativeHighADC - negativeLowADC));
   
   //Final "adjustments"
   negativeVoltage = ((13.6 - negativeVoltage) * -1) - .1;
-  
   positiveVoltage += .1;
   
-  //lcd.clear();  //Clear the display
-
+  //Output everything using the LCD Library
   lcd.setCursor(0, 0);
   lcd.print("V-");
 
   lcd.setCursor(0, 1);
   lcd.print(negativeVoltage, 1);
   
+  //Takes care of a 'bug' when the screen displays past data
   if(negativeVoltage > -10.0)
     lcd.print(" ");
 
@@ -94,6 +96,7 @@ void loop() {
   lcd.setCursor(6 , 1);
   lcd.print(positiveVoltage, 1);
 
+  //Takes care of a 'bug' when the screen displays past data
   if(positiveVoltage < 10.0)
     lcd.print(" ");
 
